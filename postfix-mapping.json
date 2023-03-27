@@ -1,0 +1,363 @@
+{
+  "template": {
+    "mappings": {
+      "properties": {
+        "postfix": {
+          "properties": {
+            "action": {
+              "type": "text"
+            },
+            "anvil": {
+              "properties": {
+                "cache_size": {
+                  "type": "integer"
+                },
+                "conn_count": {
+                  "type": "integer"
+                },
+                "conn_period": {
+                  "type": "keyword"
+                },
+                "conn_rate": {
+                  "type": "integer"
+                },
+                "timestamp": {
+                  "type": "text"
+                }
+              },
+              "type": "object"
+            },
+            "bounce": {
+              "properties": {
+                "queueid": {
+                  "type": "keyword"
+                }
+              },
+              "type": "object"
+            },
+            "cmd": {
+              "properties": {
+                "auth": {
+                  "type": "integer"
+                },
+                "auth_accepted": {
+                  "type": "integer"
+                },
+                "count": {
+                  "type": "integer"
+                },
+                "count_accepted": {
+                  "type": "integer"
+                },
+                "data": {
+                  "type": "integer"
+                },
+                "data_accepted": {
+                  "type": "integer"
+                },
+                "ehlo": {
+                  "type": "integer"
+                },
+                "ehlo_accepted": {
+                  "type": "integer"
+                },
+                "helo": {
+                  "type": "integer"
+                },
+                "helo_accepted": {
+                  "type": "integer"
+                },
+                "mail": {
+                  "type": "integer"
+                },
+                "mail_accepted": {
+                  "type": "integer"
+                },
+                "quit": {
+                  "type": "integer"
+                },
+                "quit_accepted": {
+                  "type": "integer"
+                },
+                "rcpt": {
+                  "type": "integer"
+                },
+                "rcpt_accepted": {
+                  "type": "integer"
+                },
+                "rset": {
+                  "type": "integer"
+                },
+                "rset_accepted": {
+                  "type": "integer"
+                },
+                "starttls": {
+                  "type": "integer"
+                },
+                "starttls_accepted": {
+                  "type": "integer"
+                },
+                "unknown": {
+                  "type": "integer"
+                },
+                "unknown_accepted": {
+                  "type": "integer"
+                }
+              },
+              "type": "object"
+            },
+            "config_path": {
+              "type": "text"
+            },
+            "delay_before_qmgr": {
+              "type": "float"
+            },
+            "delay_conn_setup": {
+              "type": "float"
+            },
+            "delay_in_qmgr": {
+              "type": "float"
+            },
+            "delay_transmission": {
+              "type": "float"
+            },
+            "dnsbl": {
+              "properties": {
+                "domain": {
+                  "type": "text"
+                },
+                "result": {
+                  "type": "text"
+                }
+              },
+              "type": "object"
+            },
+            "error_response": {
+              "type": "text"
+            },
+            "improper_pipelining_data": {
+              "type": "text"
+            },
+            "logs": {
+              "type": "text"
+            },
+            "message": {
+              "type": "text"
+            },
+            "message-id": {
+              "type": "text"
+            },
+            "milter": {
+              "properties": {
+                "data": {
+                  "type": "text"
+                },
+                "message": {
+                  "type": "text"
+                },
+                "result": {
+                  "type": "text"
+                }
+              },
+              "type": "object"
+            },
+            "pipe_response": {
+              "type": "text"
+            },
+            "pix_workaround": {
+              "type": "text"
+            },
+            "postscreen": {
+              "properties": {
+                "access": {
+                  "type": "text"
+                },
+                "cache_dropped": {
+                  "type": "integer"
+                },
+                "cache_retained": {
+                  "type": "integer"
+                },
+                "data": {
+                  "type": "text"
+                },
+                "dnsbl_rank": {
+                  "type": "integer"
+                },
+                "toobusy_data": {
+                  "type": "text"
+                },
+                "violation": {
+                  "type": "text"
+                },
+                "violation_time": {
+                  "type": "float"
+                }
+              },
+              "type": "object"
+            },
+            "postsuper": {
+              "properties": {
+                "action": {
+                  "type": "text"
+                },
+                "summary_action": {
+                  "type": "text"
+                },
+                "summary_count": {
+                  "type": "text"
+                }
+              },
+              "type": "object"
+            },
+            "prepend": {
+              "properties": {
+                "message": {
+                  "type": "text"
+                },
+                "value": {
+                  "type": "text"
+                }
+              },
+              "type": "object"
+            },
+            "proxy": {
+              "properties": {
+                "message": {
+                  "type": "text"
+                },
+                "result": {
+                  "type": "text"
+                },
+                "smtp_stage": {
+                  "type": "text"
+                },
+                "status_code": {
+                  "type": "text"
+                },
+                "status_code_enhanced": {
+                  "type": "text"
+                }
+              },
+              "type": "object"
+            },
+            "queueid": {
+              "type": "text"
+            },
+            "relay_service": {
+              "type": "text"
+            },
+            "service": {
+              "type": "keyword"
+            },
+            "smtp": {
+              "properties": {
+                "lostconn_data": {
+                  "type": "text"
+                },
+                "lostconn_reason": {
+                  "type": "text"
+                },
+                "response": {
+                  "type": "text"
+                }
+              },
+              "type": "object"
+            },
+            "smtp_stage": {
+              "type": "text"
+            },
+            "smtpd": {
+              "properties": {
+                "lostconn_data": {
+                  "type": "text"
+                },
+                "lostconn_reason": {
+                  "type": "text"
+                }
+              },
+              "type": "object"
+            },
+            "status": {
+              "type": "text"
+            },
+            "status_code": {
+              "type": "integer"
+            },
+            "status_code_enhanced": {
+              "type": "text"
+            },
+            "status_data": {
+              "type": "text"
+            },
+            "status_message": {
+              "type": "text"
+            },
+            "termination_signal": {
+              "type": "integer"
+            },
+            "tls": {
+              "properties": {
+                "cipher_size": {
+                  "type": "text"
+                },
+                "error": {
+                  "type": "text"
+                },
+                "tls_cipher": {
+                  "type": "text"
+                },
+                "version": {
+                  "type": "text"
+                }
+              },
+              "type": "object"
+            },
+            "var": {
+              "properties": {
+                "delay": {
+                  "type": "float"
+                },
+                "dsn": {
+                  "type": "text"
+                },
+                "from": {
+                  "type": "text"
+                },
+                "helo": {
+                  "type": "text"
+                },
+                "nrcpt": {
+                  "type": "integer"
+                },
+                "orig_to": {
+                  "type": "text"
+                },
+                "proto": {
+                  "type": "keyword"
+                },
+                "sasl_method": {
+                  "type": "keyword"
+                },
+                "size": {
+                  "type": "integer"
+                },
+                "to": {
+                  "type": "text"
+                },
+                "uid": {
+                  "type": "integer"
+                }
+              },
+              "type": "object"
+            },
+            "version": {
+              "type": "text"
+            }
+          },
+          "type": "object"
+        }
+      }
+    }
+  }
+}
