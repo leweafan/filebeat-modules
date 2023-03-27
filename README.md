@@ -9,7 +9,7 @@ You can use curl to upload ingest pipeline and component template:
 
 ```
 curl -X PUT -H "Content-Type: application/json" -k 'https://elasticsearch:9200/_ingest/pipeline/filebeat-8.6.2-postfix-log-pipeline' -d @/path/to/file/filebeat-8.6.2-postfix-log-pipeline
-curl -X PUT -H "Content-Type: application/json" -k 'https://elasticsearch:9200/_component_template/postfix-mapping'  -d @/path/to/file/postfix-mapping.json
+curl -X PUT -H "Content-Type: application/json" -k 'https://elasticsearch:9200/_component_template/postfix-mapping' -d @/path/to/file/postfix-mapping.json
 ```
 
 Also you can use Kibana Dev Tools to upload ingest pipeline and component template:
