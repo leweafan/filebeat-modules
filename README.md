@@ -27,7 +27,7 @@ PUT _component_template/postfix-mapping
 Full module and test files available [here](https://github.com/leweafan/beats/tree/postfix/filebeat/module/postfix)
 
 In contrast to Logstash ingest pipeline can't use reusable patterns until it loaded to Elasticsearch by developers. 
-So may be in future this module will be imporved.
+So may be in future this module will be improved.
 
 In contrast to Logstash postfix patterns I've tried to use ECS fields.
 
