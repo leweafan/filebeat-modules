@@ -62,5 +62,5 @@ So may be in future this module will be improved.
 
 In contrast to Logstash postfix patterns I've tried to use ECS fields.
 
-Unfortunately I haven't been able to use fields email.from.address and email.to.address instead of postfix.var.from & postfix.var.to.
+Unfortunately I haven't been able to use fields email.from.address and email.to.address instead of postfix.var.from & postfix.var.to cause filebeat test not support it as default fields.
 
