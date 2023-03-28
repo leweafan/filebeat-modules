@@ -1,9 +1,22 @@
 # filebeat-postfix
-Filebeat postfix module
 
-This is filebeat ingest pipeline for parsing postfix logs.
+## Description
+
+This is filebeat ingest pipeline for parsing postfix logs with template and siem rules.
+
+Here you will find 3 files:
+- Ingest Pipeline
+- Component Template
+- SIEM Rules
 
 I've used parsing for logstash available here https://github.com/whyscream/postfix-grok-patterns.
+
+IMHO ingest pipelines have some benefits:
+- it can be loaded without installing logstash
+- it has visual editor
+- it has sumulation
+
+## Load files to Elastic
 
 You can use curl to upload ingest pipeline and component template:
 
@@ -20,6 +33,24 @@ PUT _ingest/pipeline/filebeat-8.6.2-postfix-log-pipeline
 
 PUT _component_template/postfix-mapping
 {content_from_postfix-mapping.json}
+```
+
+## Test ingest pipeline
+
+To test ingest pipeline you can use Dev Tool Console:
+
+```
+POST /_ingest/pipeline/filebeat-8.8.0-postfix-log-pipeline/_simulate
+{
+  "docs": [
+    {
+      "_source": {
+        "@timestamp": "2023-03-20T11:39:52.178Z",
+        "message" : "Mar 24 13:58:01 mailsrv postfix/smtpd[25469]: NOQUEUE: reject: RCPT from 061238241086.static.ctinets.com[61.238.241.86]: 550 5.12.345 <user@example.com>: Recipient address rejected: Some error message; from=<wumt5@cchfdc.com> to=<user@example.com> proto=ESMTP helo=<ecsolved.com>"
+      }
+    }
+  ]
+}
 ```
 
 ## Details
