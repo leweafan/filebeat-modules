@@ -4,7 +4,6 @@
 
 This is filebeat ingest pipeline for parsing exchange logs with template and dashboard.
 
-![Exchange_dashboard_example](https://user-images.githubusercontent.com/15003981/229482889-42ae99e9-1d30-4bc1-9f81-b4e81498adb7.png)
 
 ## Load files to Elastic
 
