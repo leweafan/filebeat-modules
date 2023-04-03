@@ -24,3 +24,7 @@ Fields mapping:
 * microsoft.exchange.return_path -> email.reply_to.address
 * email.cc.address
 * email.bcc.address
+
+## Details
+
+Full module and test files available [here](https://github.com/leweafan/beats/tree/ms_exchange/filebeat/module/microsoft)
