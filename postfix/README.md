@@ -40,7 +40,7 @@ PUT _component_template/postfix-mapping
 To test ingest pipeline you can use Dev Tool Console:
 
 ```
-POST /_ingest/pipeline/filebeat-8.8.0-postfix-log-pipeline/_simulate
+POST /_ingest/pipeline/filebeat-8.6.2-postfix-log-pipeline/_simulate
 {
   "docs": [
     {
