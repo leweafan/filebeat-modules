@@ -4,6 +4,43 @@
 
 This is filebeat ingest pipeline for parsing exchange logs with template and dashboard.
 
+## Load files to Elastic
+
+You can use curl to upload ingest pipeline and component template:
+
+```
+curl -X PUT -H "Content-Type: application/json" -k 'https://elasticsearch:9200/_ingest/pipeline/filebeat-8.6.2-exchange-log-pipeline' -d @/path/to/file/filebeat-8.6.2-postfix-log-pipeline
+curl -X PUT -H "Content-Type: application/json" -k 'https://elasticsearch:9200/_component_template/exchange-mapping' -d @/path/to/file/exchange-mapping.json
+```
+
+Also you can use Kibana Dev Tools to upload ingest pipeline and component template:
+
+```
+PUT _ingest/pipeline/filebeat-8.6.2-exchange-log-pipeline
+{content_from_filebeat-8.6.2-exchange-log-pipeline}
+
+PUT _component_template/exchange-mapping
+{content_from_exchange-mapping.json}
+```
+
+## Test ingest pipeline
+
+To test ingest pipeline you can use Dev Tool Console:
+
+```
+POST /_ingest/pipeline/filebeat-8.6.2-exchange-log-pipeline/_simulate
+{
+  "docs": [
+    {
+      "_source": {
+        "@timestamp": "2023-03-20T11:39:52.178Z",
+        "message" : "2023-03-28T10:54:18.804Z,,,,server1,/o=TEST/ou=Exchange Administrative Group (FYDIBOHF23SPDLT)/cn=Recipients/cn=usere339c092,,ROUTING,RESOLVE,27389006448778,<29634534.206435.1680000849959@test3.com>,066694bd-bf3b-497b-a1d3-08db2f7ac5dc,mail1@test.com,,27289,1,mail1@test.com,,SUBJECT-XXX,test@test.com,test@test.com,,Incoming,,,,S:DeliveryPriority=Normal;S:AccountForest=test.com,Email,a785cbe6-132d-48f6-9a37-08db2f7ac7d2,15.01.2507.023"
+      }
+    }
+  ]
+}
+```
+
 ## Fields Mappins:
 
 * microsoft.exchange.client_ip -> source.ip
