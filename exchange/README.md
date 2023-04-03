@@ -4,10 +4,6 @@
 
 This is filebeat ingest pipeline for parsing exchange logs with template and dashboard.
 
-![Alt text](./Exchange dashboard - example.png "Optional title")
-
-![My Image](Exchange dashboard - example.png)
-
 ## Load files to Elastic
 
 You can use curl to upload ingest pipeline and component template:
