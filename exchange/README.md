@@ -6,10 +6,10 @@ This is filebeat ingest pipeline for parsing exchange logs with template and das
 
 ## Fields Mappins:
 
-microsoft.exchange.client_ip -> source.ip
-microsoft.exchange.server_ip -> destination.ip
-microsoft.exchange.original_client_ip -> client.ip
-microsoft.exchange.original_server_ip -> server.ip
+* microsoft.exchange.client_ip -> source.ip
+* microsoft.exchange.server_ip -> destination.ip
+* microsoft.exchange.original_client_ip -> client.ip
+* microsoft.exchange.original_server_ip -> server.ip
 
 ## TODO
 
