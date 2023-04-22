@@ -1,4 +1,4 @@
-# filebeat-exchange
+# Elasticsearch Ingest Pipeline for Exchange with ECS (filebeat-exchange)
 
 ## Description
 
