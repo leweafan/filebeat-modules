@@ -1,4 +1,4 @@
-# filebeat-postfix
+# Elasticsearch Ingest Pipeline for Postfix with ECS (filebeat-postfix)
 
 ## Description
 
