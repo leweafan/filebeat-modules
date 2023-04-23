@@ -8,7 +8,7 @@ Below modules I have used and checked does it have event.category authentication
 | ------------- | ------------- | ------------------------------- | ----- | -- |
 | Checkpoint | checkpoint.firewall | OK |
 | Cisco | cisco.asa | Missing |
-| Elasticsearch | elasticsearch.server |  N/A |
+| Elasticsearch | elasticsearch.server |  Missing | [Issue](https://github.com/elastic/beats/issues/32249) |
 | Fortinet | fortinet.firewall | Missing |
 | Fortinet | fortinet.fortimanager | Missing | [Issue](https://github.com/elastic/beats/issues/34023) |
 | IIS | iis.access | N/A |
