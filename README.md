@@ -52,7 +52,8 @@ Filebeat modules which I plan to create from existing logstash patterns:
 | Nemesida |
 | Netapp |
 | Netgear |
-| Netscaler	|
+| Netscaler |
+| Nextcloud |
 | Nexus |
 | Oracle alert.log dataset | [Issue](https://github.com/elastic/beats/issues/34056) |
 | Pleasant Password Server |
