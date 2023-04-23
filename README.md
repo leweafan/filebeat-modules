@@ -19,9 +19,9 @@ Below listed modules I have used and checked does it have event.category authent
 | MSSQL |	mssql.log	| Missing |
 | MySQL | mysql.error	| PR accepted | [Issue](https://github.com/elastic/beats/issues/32231) | [PR accepted](https://github.com/elastic/beats/pull/34810) |
 | MySQL |	mysql.slowlog	| N/A |
-| netflow	| netflow.log	| N/A |
-| nginx	| nginx.access| N/A |
-| nginx	| nginx.error	| PR - in progress | [Issue](https://github.com/elastic/beats/issues/32157) | [PR - in progress](https://github.com/elastic/beats/pull/34704) |
+| Netflow	| netflow.log	| N/A |
+| Nginx	| nginx.access| N/A |
+| Nginx	| nginx.error	| PR - in progress | [Issue](https://github.com/elastic/beats/issues/32157) | [PR - in progress](https://github.com/elastic/beats/pull/34704) |
 | Oracle | oracle.database_audit | PR - in progress | [Issue](https://github.com/elastic/beats/issues/30975) |[PR - in progress](https://github.com/elastic/beats/pull/35127) |
 | Postgresql |postgresql.log	| PR - in progress | [Issue](https://github.com/elastic/beats/issues/32228) | [PR - in progress](https://github.com/elastic/beats/pull/34744) |
 | Rabbitmq	| rabbitmq.log| OK | [Issue](https://github.com/elastic/beats/issues/32255) |
