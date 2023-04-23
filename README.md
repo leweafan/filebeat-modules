@@ -30,11 +30,34 @@ Below modules I have used and checked does it have event.category authentication
 | System | system.auth |  Some patterns missing | [Issue](https://github.com/elastic/beats/issues/35044) |
 | System | system.syslog | N/A |
 
-Filebeat modules which I plan to create 
-| Module | Status |
-| ------------- | ------------- | 
+Filebeat modules which I plan to create from existing logstash patterns:
+
+| Module | Status | Comment |
+| -------| ------ | ------- |
+| ACS |
+| Atlassian Confluence | | There is elastic integration |
+| Atlassian Jira | | There is elastic integration |
+| Authelia|
+| ESET |
+| Gitlab |
+| HP 3par |
+| HP 3par-vsp |
+| HP BladeSwitch |
+| HP ILO |
+| HP MSA |
 | Microsoft Exchange | [PR - in progress](https://github.com/elastic/beats/pull/35004) |
-| Mikrotik | |
-| Netscaler	| |
+| Mikrotik |
+| Multifactor |
+| Nemesida |
+| Netapp |
+| Netgear |
+| Netscaler	|
+| Nexus |
 | Oracle alert.log dataset | [Issue](https://github.com/elastic/beats/issues/34056) |
+| Pleasant Password Server |
 | Postfix | [PR - in progress](https://github.com/elastic/beats/pull/34980) |
+| Unify |
+| VMware ESXi |
+| VMware vCenter |
+| Windows Firewall |
+| Other | | add later |
