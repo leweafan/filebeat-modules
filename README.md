@@ -2,7 +2,7 @@
 
 To protect our infrastructure I have analyzed our SW/HW logs and Elastic SIEM patterns and found that a lot of authentication messages patterns missing in filebeat tests and messages not parsed and not categorized appropriately that's why Elastic SIEM skips these events.
 
-Below modules I have used and checked does it have event.category authentication.
+Below listed modules I have used and checked does it have event.category authentication.
 
 | Event module  | Event dataset | Event category = Authentication | Issue | PR |
 | ------------- | ------------- | ------------------------------- | ----- | -- |
@@ -10,7 +10,7 @@ Below modules I have used and checked does it have event.category authentication
 | Cisco | cisco.asa | Missing |
 | Elasticsearch | elasticsearch.server |  Missing | [Issue](https://github.com/elastic/beats/issues/32249) |
 | Fortinet | fortinet.firewall | Missing |
-| Fortinet | fortinet.fortimanager | Missing | [Issue](https://github.com/elastic/beats/issues/34023) |
+| Fortinet | fortinet.fortimanager | Missing | [Issue1](https://github.com/elastic/beats/issues/34023) [Issue2](https://github.com/elastic/beats/issues/35176)|
 | IIS | iis.access | N/A |
 | IIS | iis.error | N/A |
 | Juniper	| juniper.junos |	Missing |
