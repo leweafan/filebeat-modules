@@ -38,6 +38,7 @@ Filebeat modules which I plan to create from existing logstash patterns:
 | Atlassian Confluence | | There is elastic integration |
 | Atlassian Jira | | There is elastic integration |
 | Authelia|
+| Brocade | 
 | ESET |
 | Gitlab |
 | HP 3par |
@@ -59,5 +60,7 @@ Filebeat modules which I plan to create from existing logstash patterns:
 | Unify |
 | VMware ESXi |
 | VMware vCenter |
+| VMware NSX-V |
+| VMware vROPs |
 | Windows Firewall |
 | Other | | add later |
