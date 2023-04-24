@@ -22,7 +22,7 @@ Below listed modules I have used and checked does it have event.category authent
 | Netflow	| netflow.log	| N/A |
 | Nginx	| nginx.access| N/A |
 | Nginx	| nginx.error	| PR - in progress | [Issue](https://github.com/elastic/beats/issues/32157) | [PR - in progress](https://github.com/elastic/beats/pull/34704) |
-| Oracle | oracle.database_audit | PR - in progress | [Issue](https://github.com/elastic/beats/issues/30975) |[PR - in progress](https://github.com/elastic/beats/pull/35127) |
+| Oracle | oracle.database_audit | PR - accepted | [Issue](https://github.com/elastic/beats/issues/30975) |[PR - accepted](https://github.com/elastic/beats/pull/35127) |
 | Postgresql |postgresql.log	| PR - in progress | [Issue](https://github.com/elastic/beats/issues/32228) | [PR - in progress](https://github.com/elastic/beats/pull/34744) |
 | Rabbitmq	| rabbitmq.log| OK | [Issue](https://github.com/elastic/beats/issues/32255) |
 | Redis	| redis.log |	N/A |
