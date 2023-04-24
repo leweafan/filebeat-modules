@@ -46,6 +46,7 @@ Filebeat modules which I plan to create from existing logstash patterns:
 | HP BladeSwitch |
 | HP ILO |
 | HP MSA |
+| HP Onboard Administrator |
 | Microsoft Exchange | [PR - in progress](https://github.com/elastic/beats/pull/35004) |
 | Mikrotik |
 | Multifactor |
