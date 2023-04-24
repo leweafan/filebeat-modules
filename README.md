@@ -17,7 +17,7 @@ Below listed modules I have used and checked does it have event.category authent
 | Kafka |	kafka.log | PR - in progress | [Issue](https://github.com/elastic/beats/issues/32229) | [PR - in progress](https://github.com/elastic/beats/pull/34683) |
 | Mongodb |	mongodb.log | PR - in progress | [Issue](https://github.com/elastic/beats/issues/32248) | [PR - in progress](https://github.com/elastic/beats/pull/34731) |
 | MSSQL |	mssql.log	| Missing |
-| MySQL | mysql.error	| PR accepted | [Issue](https://github.com/elastic/beats/issues/32231) | [PR accepted](https://github.com/elastic/beats/pull/34810) |
+| MySQL | mysql.error	| PR - accepted | [Issue](https://github.com/elastic/beats/issues/32231) | [PR - accepted](https://github.com/elastic/beats/pull/34810) |
 | MySQL |	mysql.slowlog	| N/A |
 | Netflow	| netflow.log	| N/A |
 | Nginx	| nginx.access| N/A |
