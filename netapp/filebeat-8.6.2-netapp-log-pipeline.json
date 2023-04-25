@@ -1,0 +1,282 @@
+{
+  "description": "Pipeline for parsing Netapp audit logs. Requires the geoip plugin.",
+  "processors": [
+    {
+      "set": {
+        "field": "event.ingested",
+        "value": "{{_ingest.timestamp}}"
+      }
+    },
+    {
+      "rename": {
+        "target_field": "event.original",
+        "field": "message"
+      }
+    },
+    {
+      "grok": {
+        "ignore_missing": true,
+        "field": "event.original",
+        "patterns": [
+          """%{CUSTOMTIMESTAMP:temp.timestamp} \[%{WORD:process.program}:%{WORD}:%{INT}\] ((%{WORD}|%{WORD}:%{WORD}) :: %{WORD}:%{WORD:service.name} :: (%{IP:source.ip}|%{WORD}):(%{INT:source.port}|%{WORD}) :: %{WORD}:%{USERNAME:user.name} :: %{GREEDYDATA:temp.message}|TIME_INFO::{GREEDYDATA})"""
+        ],
+        "pattern_definitions": {
+          "CUSTOMTIMESTAMP": "%{DAY} %{MONTH} %{MONTHDAY} %{YEAR} %{TIME} %{ISO8601_TIMEZONE}"
+        }
+      }
+    },
+    {
+      "date": {
+        "target_field": "@timestamp",
+        "formats": [
+          "EEE MMM dd yyyy HH:mm:ss ZZZZZ"
+        ],
+        "on_failure": [
+          {
+            "append": {
+              "field": "error.message",
+              "value": "{{ _ingest.on_failure_message }}"
+            }
+          }
+        ],
+        "if": "ctx.temp?.timestamp != null",
+        "field": "temp.timestamp"
+      }
+    },
+    {
+      "grok": {
+        "field": "temp.message",
+        "patterns": [
+          "%{WORD:http.request.method} %{URIPATHPARAM:url.original} HTTP/%{NUMBER:http.version} :: %{STATE:service.state}: %{INT:http.response.status_code}",
+          "%{WORD:http.request.method} %{URIPATHPARAM:url.original} : %{GREEDYDATA} :: %{STATE:service.state}(: %{GREEDYDATA:netapp.audit.message})?",
+          "%{WORD:http.request.method} %{URIPATHPARAM:url.original} :: %{STATE:service.state}: (%{GREEDYDATA:netapp.audit.message})?",
+          "%{AUTH_ACTION:temp.auth_action} :: %{STATE:service.state}: (%{GREEDYDATA:netapp.audit.message})?"
+        ],
+        "pattern_definitions": {
+          "STATE": "(Pending|Success|Error)",
+          "AUTH_ACTION": "Login Attempt"
+        },
+        "ignore_missing": true,
+        "if": "ctx?.service?.name == 'http'"
+      }
+    },
+    {
+      "grok": {
+        "pattern_definitions": {
+          "STATE": "(Pending|Success|Error)"
+        },
+        "ignore_missing": true,
+        "if": "ctx?.service?.name == 'snmp'",
+        "field": "temp.message",
+        "patterns": [
+          "SNMP Request :: %{STATE:service.state}(: %{GREEDYDATA:temp.message})?"
+        ]
+      }
+    },
+    {
+      "grok": {
+        "ignore_missing": true,
+        "ignore_failure": true,
+        "if": "ctx?.service?.name == 'snmp' && ctx.netapp?.audit?.message != null",
+        "field": "netapp.audit.message",
+        "patterns": [
+          "%{AUTH_FAILED:temp.auth_failed}"
+        ],
+        "pattern_definitions": {
+          "AUTH_FAILED": "Authentication failed for user"
+        }
+      }
+    },
+    {
+      "grok": {
+        "ignore_missing": true,
+        "if": "ctx?.service?.name == 'ssh'",
+        "field": "temp.message",
+        "patterns": [
+          "%{AUTH_ACTION:temp.auth_action} :: %{STATE:service.state}(: %{GREEDYDATA:netapp.audit.message})?",
+          "%{GREEDYDATA} :: %{STATE:service.state}(: %{GREEDYDATA:netapp.audit.message})?"
+        ],
+        "pattern_definitions": {
+          "AUTH_ACTION": "(Logging in|Login Attempt)",
+          "STATE": "(Pending|Success|Error)"
+        }
+      }
+    },
+    {
+      "grok": {
+        "patterns": [
+          "%{GREEDYDATA} :: %{STATE:service.state}(: %{GREEDYDATA}:netapp.audit.message)?"
+        ],
+        "pattern_definitions": {
+          "STATE": "(Pending|Success|Error)"
+        },
+        "ignore_missing": true,
+        "if": "ctx?.service?.name == 'ontapi'",
+        "field": "temp.message"
+      }
+    },
+    {
+      "grok": {
+        "patterns": [
+          "%{GREEDYDATA} :: %{STATE:service.state}(: %{GREEDYDATA:netapp.audit.message})?"
+        ],
+        "pattern_definitions": {
+          "STATE": "(Pending|Success|Error)"
+        },
+        "ignore_missing": true,
+        "if": "ctx?.service?.name == 'console'",
+        "field": "temp.message"
+      }
+    },
+    {
+      "set": {
+        "field": "log.level",
+        "value": "info",
+        "if": "ctx.service?.state != 'Error'"
+      }
+    },
+    {
+      "set": {
+        "if": "ctx.service?.state == 'Error'",
+        "field": "log.level",
+        "value": "error"
+      }
+    },
+    {
+      "set": {
+        "field": "event.action",
+        "value": "logged-in",
+        "if": "ctx?.http?.request?.method == 'POST' && ctx?.url?.original == '/security/login' && ctx?.http?.response?.status_code == '200'"
+      }
+    },
+    {
+      "set": {
+        "field": "event.action",
+        "value": "logon-failed",
+        "if": "ctx?.http?.request?.method == 'POST' && ctx?.url?.original == '/security/login' && ctx?.http?.response?.status_code == '401'"
+      }
+    },
+    {
+      "set": {
+        "field": "event.action",
+        "value": "logon-failed",
+        "if": "ctx?.temp?.auth_failed != null"
+      }
+    },
+    {
+      "set": {
+        "value": "logged-in",
+        "if": "ctx?.service?.name == 'ssh' && ctx?.temp?.auth_action == 'Logging in'",
+        "field": "event.action"
+      }
+    },
+    {
+      "set": {
+        "field": "event.action",
+        "value": "logon-failed",
+        "if": "ctx?.service?.name == 'ssh' && ctx?.temp?.auth_action == 'Login Attempt'"
+      }
+    },
+    {
+      "set": {
+        "value": "authentication",
+        "if": "ctx?.event?.action != null && ['logged-in', 'logon-failed'].contains(ctx.event.action)",
+        "field": "event.category"
+      }
+    },
+    {
+      "set": {
+        "field": "event.outcome",
+        "value": "success",
+        "if": "ctx?.event?.action != null && ctx.event.action == 'logged-in'"
+      }
+    },
+    {
+      "set": {
+        "field": "event.outcome",
+        "value": "failure",
+        "if": "ctx?.event?.action != null && ctx.event.action == 'logon-failed'"
+      }
+    },
+    {
+      "append": {
+        "if": "ctx?.source?.ip != null",
+        "field": "related.ip",
+        "value": "{{source.ip}}"
+      }
+    },
+    {
+      "append": {
+        "field": "related.user",
+        "value": "{{user.name}}",
+        "if": "ctx?.user?.name != null"
+      }
+    },
+    {
+      "uri_parts": {
+        "if": "ctx?.url?.original != null",
+        "field": "url.original",
+        "ignore_failure": true
+      }
+    },
+    {
+      "geoip": {
+        "ignore_missing": true,
+        "field": "source.ip",
+        "target_field": "source.geo"
+      }
+    },
+    {
+      "geoip": {
+        "database_file": "GeoLite2-ASN.mmdb",
+        "field": "source.ip",
+        "target_field": "source.as",
+        "properties": [
+          "asn",
+          "organization_name"
+        ],
+        "ignore_missing": true
+      }
+    },
+    {
+      "rename": {
+        "field": "source.as.asn",
+        "target_field": "source.as.number",
+        "ignore_missing": true
+      }
+    },
+    {
+      "rename": {
+        "ignore_missing": true,
+        "field": "source.as.organization_name",
+        "target_field": "source.as.organization.name"
+      }
+    },
+    {
+      "remove": {
+        "field": [
+          "netapp.audit.message"
+        ],
+        "ignore_missing": true,
+        "if": "ctx.netapp?.audit?.message == ''"
+      }
+    },
+    {
+      "remove": {
+        "field": [
+          "message",
+          "temp"
+        ],
+        "ignore_missing": true
+      }
+    }
+  ],
+  "on_failure": [
+    {
+      "set": {
+        "field": "error.message",
+        "value": "{{ _ingest.on_failure_message }}"
+      }
+    }
+  ]
+}
