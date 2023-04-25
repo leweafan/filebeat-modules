@@ -38,4 +38,4 @@ POST /_ingest/pipeline/filebeat-8.6.2-netapp-audit-pipeline/_simulate
 
 ## Details
 
-Full module and test files available [here](https://github.com/leweafan/beats/tree/netapp/filebeat/module/neapp)
+Full module and test files available [here](https://github.com/leweafan/beats/tree/netapp/filebeat/module/netapp)
