@@ -3,31 +3,30 @@
   "processors": [
     {
       "set": {
-        "field": "event.ingested",
-        "value": "{{_ingest.timestamp}}"
+        "value": "{{_ingest.timestamp}}",
+        "field": "event.ingested"
       }
     },
     {
       "rename": {
-        "target_field": "event.original",
-        "field": "message"
+        "field": "message",
+        "target_field": "event.original"
       }
     },
     {
       "grok": {
+        "pattern_definitions": {
+          "CUSTOMTIMESTAMP": "%{DAY} %{MONTH} %{MONTHDAY} %{YEAR} %{TIME} %{ISO8601_TIMEZONE}"
+        },
         "ignore_missing": true,
         "field": "event.original",
         "patterns": [
-          """%{CUSTOMTIMESTAMP:temp.timestamp} \[%{WORD:process.program}:%{WORD}:%{INT}\] ((%{WORD}|%{WORD}:%{WORD}) :: %{WORD}:%{WORD:service.name} :: (%{IP:source.ip}|%{WORD}):(%{INT:source.port}|%{WORD}) :: %{WORD}:%{USERNAME:user.name} :: %{GREEDYDATA:temp.message}|TIME_INFO::{GREEDYDATA})"""
-        ],
-        "pattern_definitions": {
-          "CUSTOMTIMESTAMP": "%{DAY} %{MONTH} %{MONTHDAY} %{YEAR} %{TIME} %{ISO8601_TIMEZONE}"
-        }
+          "%{CUSTOMTIMESTAMP:temp.timestamp} \\[%{WORD:process.program}:%{WORD}:%{INT}\\] ((%{WORD}|%{WORD}:%{WORD}) :: %{WORD}:%{WORD:service.name} :: ((%{IP:source.ip}|%{WORD}):(%{INT:source.port}|%{WORD})|%{WORD}) :: %{WORD}:%{USERNAME:user.name} :: %{GREEDYDATA:temp.message}|TIME_INFO::{GREEDYDATA})"
+        ]
       }
     },
     {
       "date": {
-        "target_field": "@timestamp",
         "formats": [
           "EEE MMM dd yyyy HH:mm:ss ZZZZZ"
         ],
@@ -40,12 +39,12 @@
           }
         ],
         "if": "ctx.temp?.timestamp != null",
-        "field": "temp.timestamp"
+        "field": "temp.timestamp",
+        "target_field": "@timestamp"
       }
     },
     {
       "grok": {
-        "field": "temp.message",
         "patterns": [
           "%{WORD:http.request.method} %{URIPATHPARAM:url.original} HTTP/%{NUMBER:http.version} :: %{STATE:service.state}: %{INT:http.response.status_code}",
           "%{WORD:http.request.method} %{URIPATHPARAM:url.original} : %{GREEDYDATA} :: %{STATE:service.state}(: %{GREEDYDATA:netapp.audit.message})?",
@@ -57,39 +56,39 @@
           "AUTH_ACTION": "Login Attempt"
         },
         "ignore_missing": true,
-        "if": "ctx?.service?.name == 'http'"
+        "if": "ctx?.service?.name == 'http'",
+        "field": "temp.message"
       }
     },
     {
       "grok": {
+        "patterns": [
+          "SNMP Request :: %{STATE:service.state}(: %{GREEDYDATA:temp.message})?"
+        ],
         "pattern_definitions": {
           "STATE": "(Pending|Success|Error)"
         },
         "ignore_missing": true,
         "if": "ctx?.service?.name == 'snmp'",
-        "field": "temp.message",
-        "patterns": [
-          "SNMP Request :: %{STATE:service.state}(: %{GREEDYDATA:temp.message})?"
-        ]
+        "field": "temp.message"
       }
     },
     {
       "grok": {
-        "ignore_missing": true,
-        "ignore_failure": true,
-        "if": "ctx?.service?.name == 'snmp' && ctx.netapp?.audit?.message != null",
         "field": "netapp.audit.message",
         "patterns": [
           "%{AUTH_FAILED:temp.auth_failed}"
         ],
         "pattern_definitions": {
           "AUTH_FAILED": "Authentication failed for user"
-        }
+        },
+        "ignore_missing": true,
+        "ignore_failure": true,
+        "if": "ctx?.service?.name == 'snmp' && ctx.netapp?.audit?.message != null"
       }
     },
     {
       "grok": {
-        "ignore_missing": true,
         "if": "ctx?.service?.name == 'ssh'",
         "field": "temp.message",
         "patterns": [
@@ -97,35 +96,40 @@
           "%{GREEDYDATA} :: %{STATE:service.state}(: %{GREEDYDATA:netapp.audit.message})?"
         ],
         "pattern_definitions": {
-          "AUTH_ACTION": "(Logging in|Login Attempt)",
-          "STATE": "(Pending|Success|Error)"
-        }
+          "STATE": "(Pending|Success|Error)",
+          "AUTH_ACTION": "(Logging in|Login Attempt)"
+        },
+        "ignore_missing": true
       }
     },
     {
       "grok": {
+        "field": "temp.message",
         "patterns": [
+          "%{AUTH_ACTION:temp.auth_action} :: %{STATE:service.state}(: %{GREEDYDATA:netapp.audit.message})?",
           "%{GREEDYDATA} :: %{STATE:service.state}(: %{GREEDYDATA}:netapp.audit.message)?"
         ],
         "pattern_definitions": {
-          "STATE": "(Pending|Success|Error)"
+          "STATE": "(Pending|Success|Error)",
+          "AUTH_ACTION": "(Logging in|Login Attempt)"
         },
         "ignore_missing": true,
-        "if": "ctx?.service?.name == 'ontapi'",
-        "field": "temp.message"
+        "if": "ctx?.service?.name == 'ontapi'"
       }
     },
     {
       "grok": {
+        "if": "ctx?.service?.name == 'console'",
+        "field": "temp.message",
         "patterns": [
+          "%{AUTH_ACTION:temp.auth_action} :: %{STATE:service.state}(: %{GREEDYDATA:netapp.audit.message})?",
           "%{GREEDYDATA} :: %{STATE:service.state}(: %{GREEDYDATA:netapp.audit.message})?"
         ],
         "pattern_definitions": {
-          "STATE": "(Pending|Success|Error)"
+          "STATE": "(Pending|Success|Error)",
+          "AUTH_ACTION": "(Logging in|Login Attempt)"
         },
-        "ignore_missing": true,
-        "if": "ctx?.service?.name == 'console'",
-        "field": "temp.message"
+        "ignore_missing": true
       }
     },
     {
@@ -137,9 +141,9 @@
     },
     {
       "set": {
-        "if": "ctx.service?.state == 'Error'",
         "field": "log.level",
-        "value": "error"
+        "value": "error",
+        "if": "ctx.service?.state == 'Error'"
       }
     },
     {
@@ -166,7 +170,7 @@
     {
       "set": {
         "value": "logged-in",
-        "if": "ctx?.service?.name == 'ssh' && ctx?.temp?.auth_action == 'Logging in'",
+        "if": "ctx?.temp?.auth_action == 'Logging in'",
         "field": "event.action"
       }
     },
@@ -174,14 +178,14 @@
       "set": {
         "field": "event.action",
         "value": "logon-failed",
-        "if": "ctx?.service?.name == 'ssh' && ctx?.temp?.auth_action == 'Login Attempt'"
+        "if": "ctx?.temp?.auth_action == 'Login Attempt'"
       }
     },
     {
       "set": {
-        "value": "authentication",
         "if": "ctx?.event?.action != null && ['logged-in', 'logon-failed'].contains(ctx.event.action)",
-        "field": "event.category"
+        "field": "event.category",
+        "value": "authentication"
       }
     },
     {
@@ -200,9 +204,9 @@
     },
     {
       "append": {
+        "value": "{{source.ip}}",
         "if": "ctx?.source?.ip != null",
-        "field": "related.ip",
-        "value": "{{source.ip}}"
+        "field": "related.ip"
       }
     },
     {
@@ -221,9 +225,9 @@
     },
     {
       "geoip": {
-        "ignore_missing": true,
         "field": "source.ip",
-        "target_field": "source.geo"
+        "target_field": "source.geo",
+        "ignore_missing": true
       }
     },
     {
@@ -247,9 +251,9 @@
     },
     {
       "rename": {
-        "ignore_missing": true,
         "field": "source.as.organization_name",
-        "target_field": "source.as.organization.name"
+        "target_field": "source.as.organization.name",
+        "ignore_missing": true
       }
     },
     {
@@ -262,9 +266,16 @@
       }
     },
     {
+      "set": {
+        "field": "message",
+        "copy_from": "netapp.audit.message",
+        "if": "ctx?.netapp?.audit?.message != null"
+      }
+    },
+    {
       "remove": {
         "field": [
-          "message",
+          "netapp.audit.message",
           "temp"
         ],
         "ignore_missing": true
