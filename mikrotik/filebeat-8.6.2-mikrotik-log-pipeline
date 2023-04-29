@@ -1,0 +1,339 @@
+{
+  "description": "Pipeline for parsing Mikrotik logs. Requires the geoip plugin.",
+  "processors": [
+  {
+    "set": {
+      "field": "event.ingested",
+      "value": "{{_ingest.timestamp}}"
+    }
+  },
+  {
+    "rename": {
+      "field": "message",
+      "target_field": "event.original"
+    }
+  },
+  {
+    "set": {
+      "field": "event.category",
+      "value": "network"
+    }
+  },
+  {
+    "grok": {
+      "patterns": [
+        "%{SYSPRIORITY}%{SYSLOGTIMESTAMP:temp.timestamp} %{SYSLOGHOST:host.name} %{GREEDYDATA:temp.message}"
+      ],
+      "pattern_definitions": {
+        "SYSPRIORITY": "<%{NONNEGINT:log.syslog.priority:int}>"
+      },
+      "ignore_missing": true,
+      "ignore_failure": true,
+      "field": "event.original"
+    }
+  },
+  {
+    "date": {
+      "formats": [
+        "MMM  d HH:mm:ss",
+        "MMM dd HH:mm:ss"
+      ],
+      "on_failure": [
+        {
+          "append": {
+            "field": "error.message",
+            "value": "{{{ _ingest.on_failure_message }}}"
+          }
+        }
+      ],
+      "if": "ctx.temp?.timestamp != null",
+      "field": "temp.timestamp"
+    }
+  },
+  {
+    "grok": {
+      "field": "temp.message",
+      "patterns": [
+        "(?:%{MIKROTIKFIREWALLNAT1}|%{MIKROTIKFIREWALLNAT2}|%{MIKROTIKFIREWALLNONAT1}|%{MIKROTIKFIREWALLNONAT2}|%{MIKROTIKFIREWALLNONAT3}|%{MIKROTIKFIREWALLNONAT4}|%{MIKROTIKFIREWALLNONAT5}|%{MIKROTIKFIREWALLNONAT6}|%{MIKROTIKFIREWALLNONAT7}|%{MIKROTIKFIREWALLNONAT8})"
+      ],
+      "pattern_definitions": {
+        "MIKROTIKFIREWALLNONAT3": "%{DATA:mikrotik.log.prefix} %{WORD:temp.LogChain}: in:%{DATA:observer.ingress.zone} out:%{DATA:observer.egress.zone}, proto %{DATA:temp.proto}, (\\[)?%{IP:source.ip}(\\])?->(\\[)?%{IP:destination.ip}(\\])?, len %{INT:source.bytes}",
+        "MIKROTIKFIREWALLNONAT6": "in:%{DATA:observer.ingress.zone} out:%{DATA:observer.egress.zone}, proto %{DATA:temp.proto}, (\\[)?%{IP:source.ip}(\\])?:%{INT:source.port}->(\\[)?%{IP:destination.ip}(\\])?:%{INT:destination.port}, len %{INT:source.bytes}",
+        "MIKROTIKFIREWALLNONAT2": "%{DATA:mikrotik.log.prefix} %{WORD:temp.LogChain}: in:%{DATA:observer.ingress.zone} out:%{DATA:observer.egress.zone}, src-mac %{MAC:source.mac}, proto %{DATA:temp.proto}, (\\[)?%{IP:source.ip}(\\])?->(\\[)?%{IP:destination.ip}(\\])?, len %{INT:source.bytes}",
+        "MIKROTIKFIREWALLNONAT4": "in:%{DATA:observer.ingress.zone} out:%{DATA:observer.egress.zone}, src-mac %{MAC:source.mac}, proto %{DATA:temp.proto}, (\\[)?%{IP:source.ip}(\\])?->(\\[)?%{IP:destination.ip}(\\])?, len %{INT:source.bytes}",
+        "MIKROTIKFIREWALLNONAT5": "in:%{DATA:observer.ingress.zone} out:%{DATA:observer.egress.zone}, src-mac %{MAC:source.mac}, proto %{DATA:temp.proto}, (\\[)?%{IP:source.ip}(\\])?:%{INT:source.port}->(\\[)?%{IP:destination.ip}(\\])?:%{INT:destination.port}, len %{INT:source.bytes}",
+        "MIKROTIKFIREWALLNONAT8": "%{DATA:mikrotik.log.prefix} %{NOTSPACE:temp.LogChain}: in:%{DATA:observer.ingress.zone}, src-mac %{MAC:source.mac}, proto %{DATA:temp.proto}, (\\[)?%{IP:source.ip}(\\])?:%{INT:source.port}->(\\[)?%{IP:destination.ip}(\\])?:%{INT:destination.port}, len %{INT:source.bytes}",
+        "MIKROTIKFIREWALLNAT2": "%{DATA:mikrotik.log.prefix} %{WORD:temp.LogChain}: in:%{DATA:observer.ingress.zone} out:%{DATA:observer.egress.zone}, src-mac %{MAC:source.mac}, proto %{DATA:temp.proto}, (\\[)?%{IP:source.ip}(\\])?:%{INT:source.port}->(\\[)?%{IP:destination.ip}(\\])?:%{INT:destination.port}, NAT %{IP}:%{INT}->\\(%{IP:source.nat.ip}:%{INT:source.nat.port}->%{IP}:%{INT}\\), len %{INT:source.bytes}",
+        "MIKROTIKFIREWALLNONAT1": "%{DATA:mikrotik.log.prefix} %{WORD:temp.LogChain}: in:%{DATA:observer.ingress.zone} out:%{DATA:observer.egress.zone}, src-mac %{MAC:source.mac}, proto %{DATA:temp.proto}, (\\[)?%{IP:source.ip}(\\])?:%{INT:source.port}->(\\[)?%{IP:destination.ip}(\\])?:%{INT:destination.port}, len %{INT:source.bytes}",
+        "MIKROTIKFIREWALLNONAT7": "%{DATA:mikrotik.log.prefix} %{WORD:temp.LogChain}: in:%{DATA:observer.ingress.zone} out:%{DATA:observer.egress.zone}, proto %{DATA:temp.proto}, (\\[)?%{IP:source.ip}(\\])?:%{INT:source.port}->(\\[)?%{IP:destination.ip}(\\])?:%{INT:destination.port}, len %{INT:source.bytes}",
+        "MIKROTIKFIREWALLNAT1": "%{DATA:mikrotik.log.prefix} %{WORD:temp.LogChain}: in:%{DATA:observer.ingress.zone} out:%{DATA:observer.egress.zone}, src-mac %{MAC:source.mac}, proto %{DATA:temp.proto}, (\\[)?%{IP:source.ip}(\\])?:%{INT:source.port}->(\\[)?%{IP:destination.ip}(\\])?:%{INT:destination.port}, NAT \\(%{IP}:%{INT}->%{IP:destination.nat.ip}:%{INT:destination.nat.port}\\)->%{IP}:%{INT}, len %{INT:source.bytes}"
+      },
+      "ignore_failure": true
+    }
+  },
+  {
+    "grok": {
+      "ignore_failure": true,
+      "field": "temp.proto",
+      "patterns": [
+        "(%{POSINT:network.iana_number}|%{PROTOCOL:network.transport}( \\(%{DATA}\\))?)"
+      ],
+      "pattern_definitions": {
+        "PROTOCOL": "(UDP|TCP|ICMP)"
+      },
+      "ignore_missing": true
+    }
+  },
+  {
+    "grok": {
+      "patterns": [
+        "%{IP:source.ip} peer sent packet for dead phase2",
+        "ppp secret <%{USERNAME:destination.user.name}> changed by %{USERNAME:user.name}",
+        "%{AUTH_FAILED:temp.auth_failed} for user %{USERNAME:user.name} from %{IP:source.ip} via ssh",
+        "user %{USERNAME:user.name} %{AUTH_SUCCESS:temp.auth_success} from %{IP:source.ip} via (api|ssh)",
+        "user %{USERNAME:user.name} logged out from %{IP:source.ip} via (api|ssh)",
+        "user %{USERNAME:destination.user.name} (added|changed|removed) by %{USERNAME:user.name}",
+        "initiate new phase %{INT} \\(Identity Protection\\): %{IP:source.ip}\\[%{INT}\\]<=>%{IP:destination.ip}\\[%{INT}\\]",
+        "user %{DATA:destination.user.name] changed by %{USERNAME:user.name}",
+        "phase1 negotiation failed due to send error. %{IP:source.ip}\\[%{INT}\\]<=>%{IP:destination.ip}\\[%{INT}\\] %{NOTSPACE}:%{NOTSPACE}",
+        "OSPFv2 neighbor %{IP:source.ip}: state change from 2-Way to Down",
+        "Failed to open TCP connection: No route to host",
+        "ISAKMP-SA established %{IP:source.ip}\\[%{INT}\\]-%{IP:destination.ip}\\[%{INT}\\] spi:%{NOTSPACE}:%{NOTSPACE}",
+        "OVPN Server settings changed by %{USERNAME:user.name}",
+        "item (added|changed|moved|removed) by %{USERNAME:user.name}",
+        "bgp peer %{NOTSPACE} (added|changed|moved|removed) by %{USERNAME:user.name}",
+        "address list entry (added|changed|moved|removed) by %{USERNAME:user.name}",
+        "config (added|changed|moved|removed) by %{USERNAME:user.name}",
+        "filter rule (added|changed|moved|removed) by %{USERNAME:user.name}",
+        "log rule (added|changed|moved|removed) by %{USERNAME:user.name}",
+        "log action (added|changed|moved|removed) by %{USERNAME:user.name}",
+        "new script (added|changed|moved|removed) by %{USERNAME:user.name}",
+        "(added|changed|moved|removed) by %{USERNAME:user.name}",
+        "device changed"
+      ],
+      "pattern_definitions": {
+        "PROTOCOL": "(UDP|TCP|ICMP)",
+        "AUTH_SUCCESS": "logged in",
+        "AUTH_FAILED": "login failure"
+      },
+      "ignore_failure": true,
+      "if": "ctx.temp?.proto == null",
+      "field": "temp.message"
+    }
+  },
+  {
+    "lowercase": {
+      "field": "network.transport",
+      "ignore_missing": true
+    }
+  },
+  {
+    "set": {
+      "field": "network.direction",
+      "value": "inbound",
+      "if": "ctx.temp?.LogChain == 'input'"
+    }
+  },
+  {
+    "set": {
+      "if": "ctx.temp?.LogChain == 'forward'",
+      "field": "network.direction",
+      "value": "outbound"
+    }
+  },
+  {
+    "set": {
+      "field": "netword.transport",
+      "value": "tcp",
+      "if": "ctx.temp?.proto == 'TCP'"
+    }
+  },
+  {
+    "set": {
+      "value": "udp",
+      "if": "ctx.temp?.proto == 'UDP'",
+      "field": "network.transport"
+    }
+  },
+  {
+    "set": {
+      "value": "icmp",
+      "if": "ctx.temp?.proto == 'ICMP'",
+      "field": "network.transport"
+    }
+  },
+  {
+    "script": {
+      "lang": "painless",
+      "ignore_failure": true,
+      "if": "ctx?.network?.iana_number != null",
+      "source": "def iana_number = ctx.network.iana_number;\nif (iana_number == '0') {\n    ctx.network.transport = 'hopopt';\n} else if (iana_number == '1') {\n    ctx.network.transport = 'icmp';\n} else if (iana_number == '2') {\n    ctx.network.transport = 'igmp';\n} else if (iana_number == '6') {\n    ctx.network.transport = 'tcp';\n} else if (iana_number == '8') {\n    ctx.network.transport = 'egp';\n} else if (iana_number == '17') {\n    ctx.network.transport = 'udp';\n} else if (iana_number == '47') {\n    ctx.network.transport = 'gre';\n} else if (iana_number == '50') {\n    ctx.network.transport = 'esp';\n} else if (iana_number == '58') {\n    ctx.network.transport = 'ipv6-icmp';\n} else if (iana_number == '112') {\n    ctx.network.transport = 'vrrp';\n} else if (iana_number == '132') {\n    ctx.network.transport = 'sctp';\n}\n"
+    }
+  },
+  {
+    "set": {
+      "field": "event.action",
+      "value": "logon-failed",
+      "if": "ctx?.temp?.auth_failed != null"
+    }
+  },
+  {
+    "set": {
+      "field": "event.action",
+      "value": "logged-in",
+      "if": "ctx?.temp?.auth_success != null"
+    }
+  },
+  {
+    "append": {
+      "if": "ctx?.event?.action != null && ['logged-in', 'logon-failed'].contains(ctx.event.action)",
+      "field": "event.category",
+      "value": "authentication"
+    }
+  },
+  {
+    "set": {
+      "field": "event.outcome",
+      "value": "success",
+      "if": "ctx?.event?.action != null && ctx.event.action == 'logged-in'"
+    }
+  },
+  {
+    "set": {
+      "field": "event.outcome",
+      "value": "failure",
+      "if": "ctx?.event?.action != null && ctx.event.action == 'logon-failed'"
+    }
+  },
+  {
+    "geoip": {
+      "field": "source.ip",
+      "target_field": "source.geo",
+      "ignore_missing": true
+    }
+  },
+  {
+    "geoip": {
+      "database_file": "GeoLite2-ASN.mmdb",
+      "field": "source.ip",
+      "target_field": "source.as",
+      "properties": [
+        "asn",
+        "organization_name"
+      ],
+      "ignore_missing": true
+    }
+  },
+  {
+    "rename": {
+      "field": "source.as.asn",
+      "target_field": "source.as.number",
+      "ignore_missing": true
+    }
+  },
+  {
+    "rename": {
+      "field": "source.as.organization_name",
+      "target_field": "source.as.organization.name",
+      "ignore_missing": true
+    }
+  },
+  {
+    "geoip": {
+      "field": "destination.ip",
+      "target_field": "destination.geo",
+      "ignore_missing": true
+    }
+  },
+  {
+    "geoip": {
+      "properties": [
+        "asn",
+        "organization_name"
+      ],
+      "ignore_missing": true,
+      "database_file": "GeoLite2-ASN.mmdb",
+      "field": "destination.ip",
+      "target_field": "destination.as"
+    }
+  },
+  {
+    "rename": {
+      "target_field": "destination.as.number",
+      "ignore_missing": true,
+      "field": "destination.as.asn"
+    }
+  },
+  {
+    "rename": {
+      "field": "destination.as.organization_name",
+      "target_field": "destination.as.organization.name",
+      "ignore_missing": true
+    }
+  },
+  {
+    "append": {
+      "field": "related.ip",
+      "value": "{{source.ip}}",
+      "if": "ctx?.source?.ip != null",
+      "allow_duplicates": false
+    }
+  },
+  {
+    "append": {
+      "allow_duplicates": false,
+      "field": "related.ip",
+      "value": "{{source.nat.ip}}",
+      "if": "ctx?.source?.nat?.ip != null"
+    }
+  },
+  {
+    "append": {
+      "allow_duplicates": false,
+      "field": "related.ip",
+      "value": "{{destination.ip}}",
+      "if": "ctx?.destination?.ip != null"
+    }
+  },
+  {
+    "append": {
+      "if": "ctx?.destination?.nat?.ip != null",
+      "allow_duplicates": false,
+      "field": "related.ip",
+      "value": "{{destination.nat.ip}}"
+    }
+  },
+  {
+    "append": {
+      "field": "related.user",
+      "value": "{{user.name}}",
+      "if": "ctx?.user?.name != null",
+      "allow_duplicates": false
+    }
+  },
+  {
+    "append": {
+      "value": "{{destination.user.name}}",
+      "if": "ctx?.destination?.user?.name != null",
+      "allow_duplicates": false,
+      "field": "related.user"
+    }
+  },
+  {
+    "remove": {
+      "field": [
+        "temp"
+      ],
+      "ignore_missing": true
+    }
+  }
+],
+  "on_failure": [
+    {
+      "set": {
+        "field": "error.message",
+        "value": "{{ _ingest.on_failure_message }}"
+      }
+    }
+  ]
+}
