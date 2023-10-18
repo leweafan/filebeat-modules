@@ -1,0 +1,5 @@
+- type: log
+  paths:
+    - C:/Program Files/Microsoft/Exchange Server/V*/TransportRoles/Logs/MessageTracking/*.LOG
+  exclude_lines: ["^#"]
+  ignore_older: 24h
