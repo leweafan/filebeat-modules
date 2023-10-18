@@ -24,6 +24,9 @@ PUT _component_template/exchange-mapping
 {content_from_exchange-mapping.json}
 ```
 
+> [!IMPORTANT]  
+> Don't forget to add component template to your template.
+
 ## Test ingest pipeline
 
 To test ingest pipeline you can use Dev Tool Console:
