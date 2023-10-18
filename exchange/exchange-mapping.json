@@ -2,109 +2,113 @@
   "template": {
     "mappings": {
       "properties": {
-        "exchange": {
+        "microsoft": {
           "properties": {
-            "client_hostname": {
-              "type": "keyword",
-              "ignore_above": 1024
-            },
-            "client_ip": {
-              "type": "ip"
-            },
-            "connector_id": {
-              "type": "keyword",
-              "ignore_above": 1024
-            },
-            "custom_data": {
-              "type": "text",
-              "norms": false
-            },
-            "directionality": {
-              "type": "keyword",
-              "ignore_above": 1024
-            },
-            "event_id": {
-              "type": "keyword",
-              "ignore_above": 1024
-            },
-            "internal_message_id": {
-              "type": "text",
-              "norms": false
-            },
-            "logdate": {
-              "type": "text",
-              "norms": false
-            },
-            "message_id": {
-              "type": "text",
-              "norms": false
-            },
-            "message_info": {
-              "type": "text",
-              "norms": false
-            },
-            "message_subject": {
-              "type": "text",
-              "norms": false
-            },
-            "network_message_id": {
-              "type": "text",
-              "norms": false
-            },
-            "original_client_ip": {
-              "type": "ip"
-            },
-            "original_server_ip": {
-              "type": "ip"
-            },
-            "recipient_address": {
-              "type": "keyword",
-              "ignore_above": 1024
-            },
-            "recipient_count": {
-              "type": "long"
-            },
-            "recipient_status": {
-              "type": "text",
-              "norms": false
-            },
-            "reference": {
-              "type": "text",
-              "norms": false
-            },
-            "related_recipient_address": {
-              "type": "keyword",
-              "ignore_above": 1024
-            },
-            "return_path": {
-              "type": "keyword",
-              "ignore_above": 1024
-            },
-            "sender_address": {
-              "type": "keyword",
-              "ignore_above": 1024
-            },
-            "server_hostname": {
-              "type": "keyword",
-              "ignore_above": 1024
-            },
-            "server_ip": {
-              "type": "ip"
-            },
-            "source": {
-              "type": "keyword",
-              "ignore_above": 1024
-            },
-            "source_context": {
-              "type": "text",
-              "norms": false
-            },
-            "tenant_id": {
-              "type": "text",
-              "norms": false
-            },
-            "total_bytes": {
-              "type": "long"
+            "exchange": {
+              "properties": {
+                "client_hostname": {
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "client_ip": {
+                  "type": "ip"
+                },
+                "connector_id": {
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "custom_data": {
+                  "type": "text",
+                  "norms": false
+                },
+                "directionality": {
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "event_id": {
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "internal_message_id": {
+                  "type": "text",
+                  "norms": false
+                },
+                "logdate": {
+                  "type": "text",
+                  "norms": false
+                },
+                "message_id": {
+                  "type": "text",
+                  "norms": false
+                },
+                "message_info": {
+                  "type": "text",
+                  "norms": false
+                },
+                "message_subject": {
+                  "type": "text",
+                  "norms": false
+                },
+                "network_message_id": {
+                  "type": "text",
+                  "norms": false
+                },
+                "original_client_ip": {
+                  "type": "ip"
+                },
+                "original_server_ip": {
+                  "type": "ip"
+                },
+                "recipient_address": {
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "recipient_count": {
+                  "type": "long"
+                },
+                "recipient_status": {
+                  "type": "text",
+                  "norms": false
+                },
+                "reference": {
+                  "type": "text",
+                  "norms": false
+                },
+                "related_recipient_address": {
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "return_path": {
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "sender_address": {
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "server_hostname": {
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "server_ip": {
+                  "type": "ip"
+                },
+                "source": {
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "source_context": {
+                  "type": "text",
+                  "norms": false
+                },
+                "tenant_id": {
+                  "type": "text",
+                  "norms": false
+                },
+                "total_bytes": {
+                  "type": "long"
+                }
+              }
             }
           }
         }
