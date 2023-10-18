@@ -66,6 +66,11 @@ Fields mapping:
 * email.cc.address
 * email.bcc.address
 
+> [!NOTE]  
+> At this moment field email is not supported by elastic test framework. [Link to elastic discuss forum](https://discuss.elastic.co/t/new-filebeat-module-ecs-not-supports-email-fields/329339)
+
+
+
 ## Details
 
 Full module and test files available [here](https://github.com/leweafan/beats/tree/ms_exchange/filebeat/module/microsoft)
